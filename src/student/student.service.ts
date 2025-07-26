@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IStudent } from './student.interface';
 import { CreateStudentDto } from './dtos/create-student.dto';
+import { UpdateStudentDto } from './dtos/update-student.dto';
 
 @Injectable()
 export class StudentService {
@@ -20,5 +21,25 @@ export class StudentService {
             ...student
         };
         this.students.push(newStudent);
+    }
+
+    updateStudent(id: number, student: UpdateStudentDto) {
+        const index = this.students.findIndex(s => s.id === id);
+        if (index !== -1) {
+            this.students[index] = { ...this.students[index], ...student };
+            return this.students[index];
+        }
+        return null;
+    }
+
+    deleteStudent(id: number) {
+        console.log(typeof id);
+        const index = this.students.findIndex(s => s.id == id);
+        if (index !== -1) {
+            const deletedStudent = this.students[index];
+            this.students.splice(index, 1);
+            return deletedStudent;
+        }
+        return null;
     }
 }

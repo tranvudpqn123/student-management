@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Put, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Res } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { IStudent } from './student.interface';
 import { Response } from 'express';
 import { CreateStudentDto } from './dtos/create-student.dto';
+import { UpdateStudentDto } from './dtos/update-student.dto';
 
 @Controller('students')
 export class StudentController {
@@ -19,13 +20,13 @@ export class StudentController {
         this.studentService.createStudent(student);
     }
 
-    @Put()
-    updateStudent() {
-        return 'This action updates a student';
+    @Put(':id')
+    updateStudent(@Param('id') id: number, @Body() student: UpdateStudentDto) {
+        return this.studentService.updateStudent(id, student);
     }
 
-    @Delete()
-    deleteStudent() {
-        return 'This action deletes a student';
+    @Delete(':id')
+    deleteStudent(@Param('id') id: number) {
+        return this.studentService.deleteStudent(id);
     }
 }
