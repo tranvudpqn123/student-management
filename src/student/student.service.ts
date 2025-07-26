@@ -33,8 +33,7 @@ export class StudentService {
     }
 
     deleteStudent(id: number) {
-        console.log(typeof id);
-        const index = this.students.findIndex(s => s.id == id);
+        const index = this.students.findIndex(s => s.id === id);
         if (index !== -1) {
             const deletedStudent = this.students[index];
             this.students.splice(index, 1);
