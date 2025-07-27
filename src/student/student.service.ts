@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IStudent } from './student.interface';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
+import { NotFoundException } from './exceptions/not-found.exception';
 
 @Injectable()
 export class StudentService {
@@ -29,7 +30,7 @@ export class StudentService {
             this.students[index] = { ...this.students[index], ...student };
             return this.students[index];
         }
-        return null;
+        throw new NotFoundException();
     }
 
     deleteStudent(id: number) {
@@ -39,6 +40,7 @@ export class StudentService {
             this.students.splice(index, 1);
             return deletedStudent;
         }
-        return null;
+        
+        throw new NotFoundException();
     }
 }
