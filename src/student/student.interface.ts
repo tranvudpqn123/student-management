@@ -3,4 +3,5 @@ export interface IStudent {
     name: string;
     age: number;
     major: string;
+    email: string;
 }
