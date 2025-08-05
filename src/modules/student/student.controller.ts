@@ -11,13 +11,13 @@ export class StudentController {
     constructor(private readonly studentService: StudentService) {}
     
     @Get()
-    getAllStudents(): IStudent[] {
-        return this.studentService.getAllStudents();
+    async getAllStudents() {
+        return await this.studentService.getAllStudents();
     }
 
     @Get(':id')
-    getStudent(@Param('id', ParseIntPipe) id: number): IStudent {
-        return this.studentService.getStudent(id);
+    async getStudent(@Param('id') id: string) {
+        return await this.studentService.getStudent(id);
     }
 
     @Post()
@@ -27,12 +27,12 @@ export class StudentController {
     }
 
     @Put(':id')
-    updateStudent(@Param('id', ParseIntPipe) id: number, @Body() student: UpdateStudentDto) {
+    updateStudent(@Param('id') id: string, @Body() student: UpdateStudentDto) {
         return this.studentService.updateStudent(id, student);
     }
 
     @Delete(':id')
-    deleteStudent(@Param('id', CustomParsePipeInt) id: number) {
+    deleteStudent(@Param('id') id: string) {
         return this.studentService.deleteStudent(id);
     }
 }

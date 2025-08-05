@@ -12,7 +12,9 @@ export function ResponseLoggerMiddleware(req: Request, res: Response, next: Next
             data: body
         };        
         // Gọi phương thức json gốc
-        return originalJson.call(this, dataMessage);
+        return res.statusCode === 200 || res.statusCode === 201
+            ? originalJson.call(this, dataMessage)
+            : originalJson.call(this, body);
     };
     next();
 }
