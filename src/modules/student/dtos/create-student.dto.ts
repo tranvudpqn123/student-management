@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsNumber, IsString, IsUUID, Length, Max, Min } from "class-validator";
+import { IsValidName } from "src/decorators/is-valid-name.decorator";
 
 export class CreateStudentDto {
     @IsString()
@@ -6,6 +7,7 @@ export class CreateStudentDto {
     @Length(3, 50, {
         message: 'Name must be between $constraint1 and $constraint2 characters long'
     })
+    @IsValidName()
     name: string;
 
     @IsNumber()
