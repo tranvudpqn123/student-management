@@ -27,7 +27,12 @@ export class DepartmentService {
     }
 
     async findAllDepartments() {
-        return await this.departmentRepository.findAll();
+        return await this.departmentRepository.findAll(
+            0, // skip
+            100, // take
+            [], // relations
+            null // where
+        );
     }
 
     async getDepartmentById(id: string) {

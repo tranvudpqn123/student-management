@@ -1,16 +1,37 @@
-import { DeleteResult, In, ObjectLiteral, Relation, Repository, UpdateResult } from "typeorm";
+import { DeleteResult, FindManyOptions, FindOptionsWhere, In, ObjectLiteral, Relation, Repository, UpdateResult } from "typeorm";
 import { BaseRepositoryInterface } from "./base.repository.interfact";
 
 export abstract class BaseRepository<T extends ObjectLiteral> implements BaseRepositoryInterface<T> {
     constructor(protected readonly repository: Repository<T>) {}
 
     create(data: T | any): Promise<T[]> {
-        console.log('create')
         return this.repository.save(this.repository.create(data));
     }
 
-    async findAll(relations: string[] = []): Promise<T[]> {
-        return await this.repository.find({ relations });
+    async findAll(
+        skip: number,
+        take: number,
+        relations: string[] = [],
+        where: FindOptionsWhere<T> | null = null
+    ): Promise<{ items: T[]; totalElements: number; itemsPerPage: number; currentPage: number }> {
+        const findOptions: FindManyOptions<T> = {}
+        if (where) {
+            findOptions.where = where;
+        }
+        if (relations) {
+            findOptions.relations = relations;
+        }
+        const count = await this.repository.count(findOptions);
+
+        findOptions.skip = skip;
+        findOptions.take = take;
+
+        return {
+            items: await this.repository.find(findOptions),
+            totalElements: count,
+            itemsPerPage: take,
+            currentPage: Math.floor(skip / take) + 1,
+        }
     }
 
     async findById(id: string): Promise<T | null> {

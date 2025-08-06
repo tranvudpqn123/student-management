@@ -5,19 +5,29 @@ import { NotFoundException } from './exceptions/not-found.exception';
 import { ERROR_MESSAGES } from 'src/constants/error-message';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './student.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { DepartmentService } from '../department/department.service';
+import { GetStudentQueryDto } from './dtos/get-student-query.dto';
+import { StudentRepository } from './student.repository';
 
 @Injectable()
 export class StudentService {
     constructor(
         @InjectRepository(Student)
         private readonly studentRepository: Repository<Student>,
-        private readonly departmentService: DepartmentService
+        private readonly departmentService: DepartmentService,
+        private readonly studentRepository2: StudentRepository
     ) {}
 
-    async getAllStudents(): Promise<Student[]> {
-        return await this.studentRepository.find();
+    async getAllStudents(query: GetStudentQueryDto) {
+        return await this.studentRepository2.findAll(
+            query.limit * (query.page - 1),
+            query.limit,
+            [], // Include department relation if needed
+            {
+                departmentId: query.departmentId
+            }
+        );
     }
 
     getStudent(id: string) {

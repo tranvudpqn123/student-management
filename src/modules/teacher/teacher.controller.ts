@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { CreateTeacherDto } from './dtos/create-teacher.dto';
 import { TeacherService } from './teacher.service';
+import { PaginationQueryDto } from 'src/common/pagination/pagination-query.dto';
+import { GetTeacherQueryDto } from './dtos/get-teacher-query.dto';
 
 @Controller('teachers')
 export class TeacherController {
@@ -13,8 +15,10 @@ export class TeacherController {
     }
 
     @Get()
-    getTeachers() {
-        return this.teacherService.getTeachers();
+    getTeachers(
+        @Query() query: GetTeacherQueryDto
+    ) {
+        return this.teacherService.getTeachers(query);
     }
 
     @Delete(':id')

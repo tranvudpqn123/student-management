@@ -4,6 +4,9 @@ import { TeacherRepository } from "./teacher.repository";
 import { ERROR_MESSAGES } from "src/constants/error-message";
 import { Department } from "../department/department.entity";
 import { DepartmentService } from "../department/department.service";
+import { PaginationQueryDto } from "src/common/pagination/pagination-query.dto";
+import { GetTeacherQueryDto } from "./dtos/get-teacher-query.dto";
+import { Like } from "typeorm";
 
 @Injectable()
 export class TeacherService {
@@ -30,8 +33,15 @@ export class TeacherService {
         });
     }
 
-    async getTeachers() {
-        return this.teacherRepository.findAll(['departments']);
+    async getTeachers(query: GetTeacherQueryDto) {
+        return this.teacherRepository.findAll(
+            query.limit * (query.page - 1),
+            query.limit,
+            ['departments'],
+            {
+                lastName: Like(`%${query.lastName}%`) // ILIKE '%value%' (case-insensitive)
+            }
+        );
     }
 
     async deleteTeacher(id: string) {
