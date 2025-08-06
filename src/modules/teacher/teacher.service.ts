@@ -4,7 +4,6 @@ import { TeacherRepository } from "./teacher.repository";
 import { ERROR_MESSAGES } from "src/constants/error-message";
 import { Department } from "../department/department.entity";
 import { DepartmentService } from "../department/department.service";
-import { PaginationQueryDto } from "src/common/pagination/pagination-query.dto";
 import { GetTeacherQueryDto } from "./dtos/get-teacher-query.dto";
 import { Like } from "typeorm";
 

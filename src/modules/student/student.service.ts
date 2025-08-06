@@ -5,7 +5,7 @@ import { NotFoundException } from './exceptions/not-found.exception';
 import { ERROR_MESSAGES } from 'src/constants/error-message';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './student.entity';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { DepartmentService } from '../department/department.service';
 import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 import { StudentRepository } from './student.repository';
