@@ -10,7 +10,6 @@ import { ConfigType } from '@nestjs/config';
 import authConfig from './../../config/auth.config';
 import { Users } from '../user/user.entity';
 
-
 @Injectable()
 export class AuthService {
 
@@ -73,7 +72,7 @@ export class AuthService {
     }
 
     private async generateToken(user: Users) {
-        const token = await this.signToken(user.id, this.authConfiguration.expiresIn);
+        const token = await this.signToken(user.id, this.authConfiguration.expiresIn, {email: user.email});
         const refreshToken = await this.signToken(user.id, this.authConfiguration.refreshTokenExpiresIn);
         return {
             token,

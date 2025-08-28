@@ -9,7 +9,6 @@ export class ForbiddenExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
         const status = exception.getStatus();
-        console.log('ForbiddenExceptionFilter caught an exception:', exception);
 
         response
             .status(status)

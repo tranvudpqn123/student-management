@@ -23,9 +23,6 @@ export class AppController {
     @Get()
     getHello(): string {
         const mysqlConfig = this.configService.get<MySqlConfiguration>('mysql');
-        if (mysqlConfig) {
-            console.log('Config Value:', mysqlConfig.host);
-        }
         return this.appService.getHello();
     }
 }

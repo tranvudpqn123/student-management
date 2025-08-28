@@ -8,7 +8,6 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
         const status = exception.getStatus();
-        console.log('NotFoundExceptionFilter:', { status, message: exception.message });
 
         response
             .status(status)

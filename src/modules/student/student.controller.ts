@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('students')
 @Controller('students')
@@ -17,9 +18,10 @@ export class StudentController {
     @ApiResponse({ status: 200, description: 'Students retrieved successfully' })
     @ApiResponse({ status: 400, description: 'Bad request' })
     async getAllStudents(
-        @Query() query: GetStudentQueryDto
+        @Query() query: GetStudentQueryDto,
+        @Req() req: any
     ) {
-        console.log('controller')
+        console.log('Request user:', req.user);
         return await this.studentService.getAllStudents(query);
     }
 

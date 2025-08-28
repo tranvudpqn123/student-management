@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 export function ResponseLoggerMiddleware(req: Request, res: Response, next: NextFunction) {
-    console.log('middleware')
     // Lưu phương thức json gốc
     const originalJson = res.json;
     
