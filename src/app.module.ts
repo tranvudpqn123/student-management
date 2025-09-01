@@ -11,6 +11,7 @@ import { SubjectModule } from './modules/subject/subject.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
     imports: [
@@ -41,6 +42,7 @@ import { UserModule } from './modules/user/user.module';
         TeacherModule,
         AuthModule,
         UserModule,
+        RoleModule,
     ],
     controllers: [AppController],
     providers: [AppService],

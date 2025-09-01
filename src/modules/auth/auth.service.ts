@@ -43,7 +43,7 @@ export class AuthService {
             return await this.generateToken(user);
 
         } catch (error) {
-
+            throw error;
         }
 
     }
@@ -72,7 +72,8 @@ export class AuthService {
     }
 
     private async generateToken(user: Users) {
-        const token = await this.signToken(user.id, this.authConfiguration.expiresIn, {email: user.email});
+        console.log('user role: ', user.role);
+        const token = await this.signToken(user.id, this.authConfiguration.expiresIn, {email: user.email, role: user.role.name});
         const refreshToken = await this.signToken(user.id, this.authConfiguration.refreshTokenExpiresIn);
         return {
             token,

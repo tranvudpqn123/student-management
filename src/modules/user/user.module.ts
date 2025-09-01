@@ -5,10 +5,12 @@ import { Users } from './user.entity';
 import { UserService } from './user.service';
 import { HashingProvider } from 'src/providers/hasding.provider';
 import { BcryptProvider } from 'src/providers/bcript.provider';
+import { RoleModule } from '../role/role.module';
 
 @Module({
     controllers: [UserController],
     imports: [
+        RoleModule,
         TypeOrmModule.forFeature([Users])
     ],
     providers: [

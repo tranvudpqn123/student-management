@@ -6,20 +6,15 @@ import { Student } from "./student.entity";
 import { DepartmentModule } from "../department/department.module";
 import { StudentRepository } from "./student.repository";
 import { JwtStrategyProvider } from "src/providers/jwt-strategy.provider";
-import { AuthGuard, PassportModule } from "@nestjs/passport";
+import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
-import { APP_GUARD } from "@nestjs/core";
 
 @Module({
     controllers: [StudentController],
     providers: [
         StudentService,
         StudentRepository,
-        JwtStrategyProvider,
-        {
-            provide: APP_GUARD,
-            useClass: AuthGuard('jwt')
-        }
+        JwtStrategyProvider,       
     ],
     imports: [
         PassportModule,

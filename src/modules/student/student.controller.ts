@@ -5,12 +5,17 @@ import { UpdateStudentDto } from './dtos/update-student.dto';
 import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from 'src/guards/role.guard';
+import { Roles } from 'src/decorators/roles.decorator';
+import { ROLES } from 'src/common/role.enum';
 
 @ApiTags('students')
+@UseGuards(AuthGuard('jwt'))
 @Controller('students')
 export class StudentController {
     constructor(private readonly studentService: StudentService) { }
 
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
     @Get()
     @ApiOperation({ summary: 'Get all students', description: 'Retrieve a list of all students with pagination' })
     @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
@@ -25,6 +30,7 @@ export class StudentController {
         return await this.studentService.getAllStudents(query);
     }
 
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
     @Get(':id')
     @ApiOperation({ summary: 'Get a student by ID', description: 'Retrieve a student by their ID' })
     @ApiResponse({ status: 200, description: 'Student found', type: CreateStudentDto })
@@ -33,7 +39,9 @@ export class StudentController {
     async getStudent(@Param('id') id: string) {
         return await this.studentService.getStudent(id);
     }
-
+    
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN])
+    @UseGuards(RoleGuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @ApiOperation({ summary: 'Create a new student', description: 'Add a new student to the system' })
@@ -61,6 +69,7 @@ export class StudentController {
         return this.studentService.createStudent(student);
     }
 
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN])
     @Put(':id')
     @ApiOperation({ summary: 'Update a student', description: 'Modify an existing student\'s details' })
     @ApiResponse({ status: 200, description: 'Student updated successfully', type: UpdateStudentDto })
@@ -88,6 +97,7 @@ export class StudentController {
         return this.studentService.updateStudent(id, student);
     }
 
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN])
     @Delete(':id')
     @ApiOperation({ summary: 'Delete a student', description: 'Remove a student from the system' })
     @ApiResponse({ status: 200, description: 'Student deleted successfully' })

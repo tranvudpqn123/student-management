@@ -4,4 +4,5 @@ export const ERROR_MESSAGES = {
     NOT_FOUND_BY_EMAIL: (email: string, objectName: string) => `${objectName} with email ${email} not found`,
     ALREADY_EXISTS_EMAIL: (email: string, objectName: string) => `${objectName} with email ${email} already exists`,
     PASSWORD_NOT_MATCH: () => `Password does not match`,
+    ROLE_NOT_FOUND: (role: string) => `Role ${role} not found`
 };

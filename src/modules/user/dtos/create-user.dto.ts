@@ -12,4 +12,8 @@ export class CreateUserDto {
     @MinLength(8)
     @MaxLength(100, {message: 'Password should be at most 100 characters long'})
     password: string;
+
+    @IsString()
+    @IsNotEmpty()
+    role: string;
 }

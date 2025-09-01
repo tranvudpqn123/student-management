@@ -1,15 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { CreateTeacherDto } from './dtos/create-teacher.dto';
 import { TeacherService } from './teacher.service';
 import { GetTeacherQueryDto } from './dtos/get-teacher-query.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Roles } from 'src/decorators/roles.decorator';
+import { ROLES } from 'src/common/role.enum';
+import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('teachers')
 @Controller('teachers')
 export class TeacherController {
 
     constructor(private readonly teacherService: TeacherService) { }
 
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN])
     @Post()
     @ApiOperation({ summary: 'Create a new teacher', description: 'Add a new teacher to the system' })
     @ApiResponse({ status: 201, description: 'Teacher created successfully', type: CreateTeacherDto })
@@ -36,6 +41,7 @@ export class TeacherController {
         return this.teacherService.createTeacher(createTeacher);
     }
 
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
     @Get()
     @ApiOperation({ summary: 'Get all teachers', description: 'Retrieve a list of all teachers with pagination' })
     @ApiResponse({ status: 200, description: 'Teachers retrieved successfully' })
@@ -45,6 +51,7 @@ export class TeacherController {
         return this.teacherService.getTeachers(query);
     }
 
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN])
     @Delete(':id')
     @ApiOperation({ summary: 'Delete a teacher', description: 'Remove a teacher from the system' })
     @ApiResponse({ status: 200, description: 'Teacher deleted successfully' })

@@ -1,9 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateDepartmentDto } from './dtos/create-department.dto';
 import { DepartmentService } from './department.service';
 import { UpdateDepartmentDto } from './dtos/update-department.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
+
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('departments')
 @Controller('departments')
 export class DepartmentController {
