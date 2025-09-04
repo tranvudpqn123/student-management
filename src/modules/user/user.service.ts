@@ -6,18 +6,52 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { ERROR_MESSAGES } from 'src/constants/error-message';
 import { HashingProvider } from 'src/providers/hasding.provider';
 import { RoleService } from '../role/role.service';
+import { GetUserQueryDto } from './dtos/get-user-query.dto';
+import { userRepository } from './user.repository';
+import { Role } from '../role/role.entity';
+import e from 'express';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService {
 
     constructor(
-        @InjectRepository(Users)
-        private readonly userRepository: Repository<Users>,
+        private readonly userRepository: userRepository,
         private readonly hashingProvider: HashingProvider,
         private readonly roleService: RoleService
     ) { }
 
-    async createUser(request: CreateUserDto): Promise<Users> {
+    async getAllUsers(query: GetUserQueryDto) {
+        let existingRole: Role | null = null;
+        if (query.role) {
+            existingRole = await this.roleService.getRoleByName(query.role);
+            if (!existingRole) {
+                throw new BadRequestException(ERROR_MESSAGES.ROLE_NOT_FOUND(query.role));
+            }
+        }
+
+        console.log('email: ', existingRole)
+
+        let condition: object = existingRole ? { 
+            role: { id: existingRole.id }
+        } : {};
+
+        if (query.email) {
+            condition = {
+                ...condition,
+                email: query.email
+            };
+        }
+
+        return this.userRepository.findAll(
+            query.limit * (query.page - 1),
+            query.limit,
+            [],
+            condition
+        );
+    }
+
+    async createUser(request: CreateUserDto) {
         try {
             const existingRole = await this.roleService.getRoleByName(request.role);
             if (!existingRole) {
@@ -30,13 +64,13 @@ export class UserService {
             }
 
             const username = request.email.split('@')[0];
-            const user = this.userRepository.create({
+            const user = await this.userRepository.create({
                 ...request,
                 username,
                 password: await this.hashingProvider.hashPassword(request.password),
                 role: existingRole
             });
-            return this.userRepository.save(user);
+            return user;
         } catch (error) {
             if (error instanceof HttpException) {
                 throw error;
@@ -45,8 +79,58 @@ export class UserService {
         }
     }
 
+    async updateUser(id: string, updateUserDto: UpdateUserDto) {
+        const { newPassword, oldPassword, role } = updateUserDto;
+        const existingUser = await this.userRepository.findById(id);
+        if (!existingUser) {
+            throw new BadRequestException(ERROR_MESSAGES.NOT_FOUND_BY_ID(id, 'users'));
+        }
+
+
+        if (oldPassword && newPassword) {
+            const isEqual = await this.hashingProvider.comparePassword(oldPassword, existingUser.password);
+
+            if (!isEqual) {
+                throw new BadRequestException(ERROR_MESSAGES.PASSWORD_NOT_MATCH());
+            }
+        }
+        
+
+        let existingRole: Role | null = null;
+        if (role) {
+            existingRole = await this.roleService.getRoleByName(role);
+            if (!existingRole) {
+                throw new BadRequestException(ERROR_MESSAGES.ROLE_NOT_FOUND(role));
+            }
+        }
+        
+        // Update user properties
+        existingUser.password = newPassword ? await this.hashingProvider.hashPassword(newPassword) : existingUser.password;
+        existingUser.role = existingRole || existingUser.role;
+
+        const res = await this.userRepository.update(id, existingUser);
+        return res.affected && res.affected > 0 ? existingUser : null;
+    }
+
+    async deleteUser(id: string) {
+        const existingUser = await this.userRepository.findById(id);
+        if (!existingUser) {
+            throw new BadRequestException(ERROR_MESSAGES.NOT_FOUND_BY_ID(id, 'users'));
+        }
+        return await this.userRepository.delete(id);
+    }
+
+    async getUserDetail(id: string) {
+        const existingUser = await this.userRepository.findById(id);
+        if (!existingUser) {
+            throw new BadRequestException(ERROR_MESSAGES.NOT_FOUND_BY_ID(id, 'users'));
+        }
+        return existingUser;
+    }
+
     async findUserByEmail(email: string): Promise<Users | null> {
-        return await this.userRepository.findOne({ where: { email } });
+        const existingUser = await this.userRepository.findOneBy({ email });
+        return existingUser;
     }
 
 }

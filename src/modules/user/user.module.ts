@@ -6,6 +6,7 @@ import { UserService } from './user.service';
 import { HashingProvider } from 'src/providers/hasding.provider';
 import { BcryptProvider } from 'src/providers/bcript.provider';
 import { RoleModule } from '../role/role.module';
+import { userRepository } from './user.repository';
 
 @Module({
     controllers: [UserController],
@@ -15,6 +16,7 @@ import { RoleModule } from '../role/role.module';
     ],
     providers: [
         UserService,
+        userRepository,
         {
             provide: HashingProvider,
             useClass: BcryptProvider

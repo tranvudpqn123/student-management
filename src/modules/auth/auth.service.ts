@@ -72,7 +72,6 @@ export class AuthService {
     }
 
     private async generateToken(user: Users) {
-        console.log('user role: ', user.role);
         const token = await this.signToken(user.id, this.authConfiguration.expiresIn, {email: user.email, role: user.role.name});
         const refreshToken = await this.signToken(user.id, this.authConfiguration.refreshTokenExpiresIn);
         return {
