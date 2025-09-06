@@ -65,8 +65,8 @@ export class StudentController {
             }
         }
     })
-    createStudent(@Body() student: CreateStudentDto) {
-        return this.studentService.createStudent(student);
+    createStudent(@Req() request, @Body() student: CreateStudentDto) {
+        return this.studentService.createStudent(request.user.id, student);
     }
 
     @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN])

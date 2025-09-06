@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUserQueryDto } from './dtos/get-user-query.dto';
@@ -7,6 +7,7 @@ import { request } from 'express';
 import { Roles } from 'src/decorators/roles.decorator';
 import { ROLES } from 'src/common/role.enum';
 import { RoleGuard } from 'src/guards/role.guard';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
@@ -34,5 +35,12 @@ export class UserController {
     deleteUser(@Req() request, @Param('id') id: string) {
         console.log('user: ', request.user)
         return this.userService.deleteUser(id);
+    }
+
+    @Roles([ROLES.ADMIN])
+    @UseGuards(RoleGuard)    
+    @Post()
+    createUser(@Req() request, @Body() createUserDto: CreateUserDto) {
+        return this.userService.createUser(request.user.id, createUserDto);
     }
 }

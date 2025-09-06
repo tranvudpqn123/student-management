@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Department } from "../department/department.entity";
 import { Role } from "../role/role.entity";
+import { Users } from "../user/user.entity";
 
 @Entity()
 export class Student {
@@ -38,8 +39,16 @@ export class Student {
     @CreateDateColumn()
     createdDate: Date;
 
+    @ManyToOne(() => Users)
+    @JoinColumn({ name: 'created_by' })
+    createdBy: Users;
+
     @UpdateDateColumn()
     updatedDate: Date;
+
+    @ManyToOne(() => Users)
+    @JoinColumn({ name: 'updated_by' })
+    updatedBy: Users;
 
     @Column({ nullable: true, name: 'department_id' })
     departmentId: string;

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Role } from "../role/role.entity";
 
 @Entity()
@@ -32,13 +32,20 @@ export class Users {
     @CreateDateColumn()
     createdAt: Date;
 
+    // Quan hệ: User này được tạo bởi ai
+    @ManyToOne(() => Users)
+    createdBy: Users;
+
     @UpdateDateColumn()
     updatedAt: Date;
+
+    @ManyToOne(() => Users)
+    updatedBy: Users;
 
     @DeleteDateColumn()
     deletedAt: Date;
 
     @ManyToOne(() => Role, (role) => role.users, {eager: true})
-    @JoinColumn({name: 'role_id'})
+    @JoinColumn({ name: 'role_id' })
     role: Role;
 }

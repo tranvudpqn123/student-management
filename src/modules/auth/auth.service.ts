@@ -22,7 +22,7 @@ export class AuthService {
     ) { }
 
     signup(request: CreateUserDto) {
-        return this.userService.createUser(request);
+        return this.userService.createUser(null, request);
     }
 
     async login(loginDto: LoginDto) {

@@ -8,10 +8,12 @@ import { StudentRepository } from "./student.repository";
 import { JwtStrategyProvider } from "src/providers/jwt-strategy.provider";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
+import { UserModule } from "../user/user.module";
 
 @Module({
     controllers: [StudentController],
     providers: [
+        
         StudentService,
         StudentRepository,
         JwtStrategyProvider,       
@@ -23,7 +25,8 @@ import { JwtModule } from "@nestjs/jwt";
             signOptions: { expiresIn: process.env.JWT_TOKEN_EXPIRATION },
         }),
         TypeOrmModule.forFeature([Student]),
-        DepartmentModule
+        DepartmentModule,
+        UserModule
     ]
 })
 export class StudentModule {

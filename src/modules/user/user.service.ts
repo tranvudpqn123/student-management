@@ -51,7 +51,7 @@ export class UserService {
         );
     }
 
-    async createUser(request: CreateUserDto) {
+    async createUser(creatorId: string | null, request: CreateUserDto) {
         try {
             const existingRole = await this.roleService.getRoleByName(request.role);
             if (!existingRole) {
@@ -63,12 +63,21 @@ export class UserService {
                 throw new BadRequestException(ERROR_MESSAGES.ALREADY_EXISTS_EMAIL(existingUser.email, 'User'));
             }
 
+            let creatorUser: Users | null = null;
+            if (creatorId) {
+                creatorUser = await this.userRepository.findById(creatorId);
+                if (!creatorUser) {
+                    throw new BadRequestException(ERROR_MESSAGES.NOT_FOUND_BY_ID(creatorId, 'users'));
+                }
+            }
+
             const username = request.email.split('@')[0];
             const user = await this.userRepository.create({
                 ...request,
                 username,
                 password: await this.hashingProvider.hashPassword(request.password),
-                role: existingRole
+                role: existingRole,
+                createdBy: creatorUser
             });
             return user;
         } catch (error) {
@@ -121,7 +130,7 @@ export class UserService {
     }
 
     async getUserDetail(id: string) {
-        const existingUser = await this.userRepository.findById(id);
+        const existingUser = await this.userRepository.findById(id, ['createdBy', 'updatedBy', 'role']);
         if (!existingUser) {
             throw new BadRequestException(ERROR_MESSAGES.NOT_FOUND_BY_ID(id, 'users'));
         }

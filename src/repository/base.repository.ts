@@ -34,8 +34,8 @@ export abstract class BaseRepository<T extends ObjectLiteral> implements BaseRep
         }
     }
 
-    async findById(id: string): Promise<T | null> {
-        return await this.findByCondition({ id });
+    async findById(id: string, relations: string[] = []): Promise<T | null> {
+        return await this.findByCondition({ id }, relations);
     }
 
     update(id: string, data: T): Promise<UpdateResult> {
@@ -60,7 +60,7 @@ export abstract class BaseRepository<T extends ObjectLiteral> implements BaseRep
         } as any);
     }
 
-    async findByCondition(filterCondition: any): Promise<T | null> {
-		return await this.repository.findOne({ where: filterCondition });
+    async findByCondition(filterCondition: any, relations: string[] = []): Promise<T | null> {
+		return await this.repository.findOne({ where: filterCondition, relations });
 	}
 }

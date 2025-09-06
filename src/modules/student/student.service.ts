@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { DepartmentService } from '../department/department.service';
 import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 import { StudentRepository } from './student.repository';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class StudentService {
@@ -16,7 +17,8 @@ export class StudentService {
         @InjectRepository(Student)
         private readonly studentRepository: Repository<Student>,
         private readonly departmentService: DepartmentService,
-        private readonly studentRepository2: StudentRepository
+        private readonly studentRepository2: StudentRepository,
+        private readonly userService: UserService
     ) {}
 
     async getAllStudents(query: GetStudentQueryDto) {
@@ -38,7 +40,9 @@ export class StudentService {
         return student;
     }
 
-    async createStudent(student: CreateStudentDto) {
+    async createStudent(userId: string, student: CreateStudentDto) {
+        const existingUser = await this.userService.getUserDetail(userId);
+
         const existingStudent = await this.getStudentByEmail(student.email);
 
         if (existingStudent) {
@@ -50,7 +54,10 @@ export class StudentService {
             throw new NotFoundException(ERROR_MESSAGES.NOT_FOUND_BY_ID(student.departmentId, 'Department'));
         }
 
-        const newStudent = this.studentRepository.create(student);
+        const newStudent = this.studentRepository.create({
+            ...student,
+            createdBy: existingUser
+        });
         await this.studentRepository.save(newStudent);
 
         return newStudent;
