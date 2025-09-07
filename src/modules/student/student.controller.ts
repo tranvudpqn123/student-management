@@ -17,6 +17,7 @@ export class StudentController {
     constructor(private readonly studentService: StudentService) { }
 
     @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
+    @UseGuards(RoleGuard)
     @Get()
     @ApiOperation({ summary: 'Get all students', description: 'Retrieve a list of all students with pagination' })
     @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
@@ -27,8 +28,7 @@ export class StudentController {
         @Query() query: GetStudentQueryDto,
         @Req() req: any
     ) {
-        console.log('Request user:', req.user);
-        return await this.studentService.getAllStudents(query);
+        return await this.studentService.getAllStudents(query, req.user);
     }
 
     @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
@@ -41,7 +41,7 @@ export class StudentController {
         return await this.studentService.getStudent(id);
     }
     
-    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN])
+    @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
     @UseGuards(RoleGuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)

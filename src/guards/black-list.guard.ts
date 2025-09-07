@@ -10,9 +10,6 @@ export class BlackListGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const token = request.headers['authorization']?.replace('Bearer ', '');
-
-        console.log('Token from header:', token);
-
         if (!token) throw new UnauthorizedException('No token provided');
 
         const isBlacklisted = await this.blackListTokenRepository.findByCondition({ token });

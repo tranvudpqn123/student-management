@@ -10,6 +10,7 @@ import { DepartmentService } from '../department/department.service';
 import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 import { StudentRepository } from './student.repository';
 import { UserService } from '../user/user.service';
+import { IUserAuthentication } from 'src/models/user-authentication.interface';
 
 @Injectable()
 export class StudentService {
@@ -21,14 +22,20 @@ export class StudentService {
         private readonly userService: UserService
     ) {}
 
-    async getAllStudents(query: GetStudentQueryDto) {
+    async getAllStudents(query: GetStudentQueryDto, user: IUserAuthentication) {
+        const condition: any = {
+                departmentId: query.departmentId
+            };
+
+        if (user.role === 'USER') {
+            condition.createdBy = {id: user.id};
+        }
+
         return await this.studentRepository2.findAll(
             query.limit * (query.page - 1),
             query.limit,
             [], // Include department relation if needed
-            {
-                departmentId: query.departmentId
-            }
+            condition
         );
     }
 
