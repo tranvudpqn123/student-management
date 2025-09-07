@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dtos/create-role.dto';
-import { RoleRepository } from './role.repository';
+import { IRoleRepository, ROLE_REPOSITORY } from './interfaces/interface.repository.interface';
 
 @Injectable()
 export class RoleService {
     constructor(
-        private readonly roleRepository: RoleRepository
+        @Inject(ROLE_REPOSITORY)
+        private readonly roleRepository: IRoleRepository
     ) {}
 
     async createRole(createRoleDto: CreateRoleDto) {

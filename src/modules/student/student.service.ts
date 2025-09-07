@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { NotFoundException } from './exceptions/not-found.exception';
@@ -11,14 +11,14 @@ import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 import { StudentRepository } from './student.repository';
 import { UserService } from '../user/user.service';
 import { IUserAuthentication } from 'src/models/user-authentication.interface';
+import { IStudentRepository, STUDENT_REPOSITORY } from './interfaces/student.repository.interface';
 
 @Injectable()
 export class StudentService {
     constructor(
-        @InjectRepository(Student)
-        private readonly studentRepository: Repository<Student>,
         private readonly departmentService: DepartmentService,
-        private readonly studentRepository2: StudentRepository,
+        @Inject(STUDENT_REPOSITORY)
+        private readonly studentRepository: IStudentRepository,
         private readonly userService: UserService
     ) {}
 
@@ -31,7 +31,7 @@ export class StudentService {
             condition.createdBy = {id: user.id};
         }
 
-        return await this.studentRepository2.findAll(
+        return await this.studentRepository.findAll(
             query.limit * (query.page - 1),
             query.limit,
             [], // Include department relation if needed
@@ -65,7 +65,6 @@ export class StudentService {
             ...student,
             createdBy: existingUser
         });
-        await this.studentRepository.save(newStudent);
 
         return newStudent;
     }
@@ -86,7 +85,7 @@ export class StudentService {
         }
 
         Object.assign(udpatedStudent, student);
-        await this.studentRepository.save(udpatedStudent);
+        await this.studentRepository.update(udpatedStudent.id, udpatedStudent);
 
         return udpatedStudent;
     }
@@ -94,7 +93,7 @@ export class StudentService {
     async deleteStudent(id: string) {
         const deletedStudent = await this.getStudentById(id);
         if (deletedStudent) {
-            await this.studentRepository.remove(deletedStudent);
+            await this.studentRepository.delete(id);
             return deletedStudent;
         }
         
@@ -102,16 +101,11 @@ export class StudentService {
     }
 
     private async getStudentById(id: string): Promise<Student | null> {
-        return await this.studentRepository.findOne({ 
-            where: { id },
-            relations: ['department'] // Include department relation if needed
-        });
+        return await this.studentRepository.findOneBy({id});
     }
 
     private async getStudentByEmail(email: string): Promise<Student | null> {
-        return await this.studentRepository.findOne({ 
-            where: { email },
-        });
+        return await this.studentRepository.findOneBy({ email });
     }
 
 }

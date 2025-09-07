@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from './user.entity';
 import { Repository } from 'typeorm';
@@ -7,16 +7,16 @@ import { ERROR_MESSAGES } from 'src/constants/error-message';
 import { HashingProvider } from 'src/providers/hasding.provider';
 import { RoleService } from '../role/role.service';
 import { GetUserQueryDto } from './dtos/get-user-query.dto';
-import { userRepository } from './user.repository';
 import { Role } from '../role/role.entity';
-import e from 'express';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { IUserRepository, USER_REPOSITORY } from './interfaces/user.reporsitory.interface';
 
 @Injectable()
 export class UserService {
 
     constructor(
-        private readonly userRepository: userRepository,
+        @Inject(USER_REPOSITORY)
+        private readonly userRepository: IUserRepository,
         private readonly hashingProvider: HashingProvider,
         private readonly roleService: RoleService
     ) { }

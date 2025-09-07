@@ -10,13 +10,16 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { UserModule } from "../user/user.module";
 import { AuthModule } from "../auth/auth.module";
+import { STUDENT_REPOSITORY  } from "./interfaces/student.repository.interface";
 
 @Module({
     controllers: [StudentController],
     providers: [
-        
+        {
+            provide: STUDENT_REPOSITORY ,
+            useClass: StudentRepository
+        },
         StudentService,
-        StudentRepository,
         JwtStrategyProvider,       
     ],
     imports: [

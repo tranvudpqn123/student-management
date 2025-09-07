@@ -12,13 +12,21 @@ import { RefreshToken } from './refresh-token.entity';
 import { RefreshTokenRepository } from './refresh-token.repository';
 import { BlackListToken } from './black-list-token.entity';
 import { BlackListTokenReposiptory } from './black-list-token.repository';
+import { BLACK_LIST_TOKEN_REPOSITORY } from './interfaces/black-list-token.repository.interface';
+import { REFRESH_TOKEN_REPOSITORY } from './interfaces/refresh-token.repository.interfact';
 
 @Module({
     controllers: [AuthController],
     providers: [
         AuthService,
-        BlackListTokenReposiptory,
-        RefreshTokenRepository,
+        {
+            provide: REFRESH_TOKEN_REPOSITORY,
+            useClass: RefreshTokenRepository
+        },
+        {
+            provide: BLACK_LIST_TOKEN_REPOSITORY,
+            useClass: BlackListTokenReposiptory
+        },
         {
             provide: HashingProvider,
             useClass: BcryptProvider

@@ -2,16 +2,15 @@ import { BadRequestException, Inject, Injectable, NotFoundException, Unauthorize
 import { CreateUserDto } from '../user/dtos/create-user.dto';
 import { UserService } from '../user/user.service';
 import { LoginDto } from './dtos/login.dto';
-import { NotFoundExceptionFilter } from '../student/filters/not-found-exception.filter';
 import { ERROR_MESSAGES } from 'src/constants/error-message';
 import { HashingProvider } from 'src/providers/hasding.provider';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigType } from '@nestjs/config';
 import authConfig from './../../config/auth.config';
 import { Users } from '../user/user.entity';
-import { RefreshTokenRepository } from './refresh-token.repository';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
-import { BlackListTokenReposiptory } from './black-list-token.repository';
+import { IRefreshTokenRepository, REFRESH_TOKEN_REPOSITORY } from './interfaces/refresh-token.repository.interfact';
+import { BLACK_LIST_TOKEN_REPOSITORY, IBlackListTokenRepository } from './interfaces/black-list-token.repository.interface';
 
 @Injectable()
 export class AuthService {
@@ -22,8 +21,10 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly hashingProvider: HashingProvider,
         private readonly jwtService: JwtService,
-        private readonly refreshTokenRepository: RefreshTokenRepository,
-        private readonly blackListTokenRepository: BlackListTokenReposiptory
+        @Inject(REFRESH_TOKEN_REPOSITORY)
+        private readonly refreshTokenRepository: IRefreshTokenRepository,
+        @Inject(BLACK_LIST_TOKEN_REPOSITORY)
+        private readonly blackListTokenRepository: IBlackListTokenRepository
     ) { }
 
     async signup(request: CreateUserDto) {

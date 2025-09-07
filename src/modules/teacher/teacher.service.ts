@@ -1,17 +1,18 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { CreateTeacherDto } from "./dtos/create-teacher.dto";
-import { TeacherRepository } from "./teacher.repository";
 import { ERROR_MESSAGES } from "src/constants/error-message";
 import { Department } from "../department/department.entity";
 import { DepartmentService } from "../department/department.service";
 import { GetTeacherQueryDto } from "./dtos/get-teacher-query.dto";
 import { Like } from "typeorm";
+import { ITeacherRepository, TEACHER_REPOSITORY } from "./interface/teacher.repository.interface";
 
 @Injectable()
 export class TeacherService {
 
     constructor(
-        private readonly teacherRepository: TeacherRepository,
+        @Inject(TEACHER_REPOSITORY)
+        private readonly teacherRepository: ITeacherRepository,
         private readonly departmentService: DepartmentService
     ) {}
 

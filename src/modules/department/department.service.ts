@@ -1,16 +1,17 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Department } from './department.entity';
 import { Repository } from 'typeorm';
 import { CreateDepartmentDto } from './dtos/create-department.dto';
 import { ERROR_MESSAGES } from 'src/constants/error-message';
-import { DepartmentRepository } from './department.repository';
 import { UpdateDepartmentDto } from './dtos/update-department.dto';
+import { DEPARTMENT_REPOSITORY, IDepartmentRepository } from './interfaces/department.repository.interface';
 
 @Injectable()
 export class DepartmentService {
     constructor(
-        private readonly departmentRepository: DepartmentRepository
+        @Inject(DEPARTMENT_REPOSITORY)
+        private readonly departmentRepository: IDepartmentRepository
     ) {}
 
     async createDepartment(department: CreateDepartmentDto) {
