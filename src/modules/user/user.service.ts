@@ -30,8 +30,6 @@ export class UserService {
             }
         }
 
-        console.log('email: ', existingRole)
-
         let condition: object = existingRole ? { 
             role: { id: existingRole.id }
         } : {};

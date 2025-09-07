@@ -8,9 +8,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from 'src/guards/role.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { ROLES } from 'src/common/role.enum';
+import { BlackListGuard } from 'src/guards/black-list.guard';
 
 @ApiTags('students')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'), BlackListGuard)
 @Controller('students')
 export class StudentController {
     constructor(private readonly studentService: StudentService) { }

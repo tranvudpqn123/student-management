@@ -7,11 +7,18 @@ import { BcryptProvider } from 'src/providers/bcript.provider';
 import { ConfigModule } from '@nestjs/config';
 import authConfig from './../../config/auth.config';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RefreshToken } from './refresh-token.entity';
+import { RefreshTokenRepository } from './refresh-token.repository';
+import { BlackListToken } from './black-list-token.entity';
+import { BlackListTokenReposiptory } from './black-list-token.repository';
 
 @Module({
     controllers: [AuthController],
     providers: [
         AuthService,
+        BlackListTokenReposiptory,
+        RefreshTokenRepository,
         {
             provide: HashingProvider,
             useClass: BcryptProvider
@@ -19,8 +26,10 @@ import { JwtModule } from '@nestjs/jwt';
     ],
     imports: [
         UserModule,
+        TypeOrmModule.forFeature([RefreshToken, BlackListToken]),
         ConfigModule.forFeature(authConfig),
         JwtModule.registerAsync(authConfig.asProvider())
-    ]
+    ],
+    exports: [BlackListTokenReposiptory]
 })
 export class AuthModule { }
