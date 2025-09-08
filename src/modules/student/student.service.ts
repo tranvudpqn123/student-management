@@ -8,6 +8,7 @@ import { UpdateStudentUseCase } from './use-cases/update-student.use-case';
 import { DeleteStudentUseCase } from './use-cases/delete-student.use-case';
 import { GetStudentDetailUseCase } from './use-cases/get-student-detail.use-case';
 import { GetAllStudentsUseCase } from './use-cases/get-all-students.use-case';
+import { UpdateImageUseCase } from './use-cases/upload-image.use-case';
 
 @Injectable()
 export class StudentService {
@@ -16,7 +17,8 @@ export class StudentService {
         private readonly updateStudentUseCase: UpdateStudentUseCase,  
         private readonly deleteStudentUseCase: DeleteStudentUseCase,  
         private readonly getStudentDetailUseCase: GetStudentDetailUseCase,
-        private readonly getAllStudentsUseCase: GetAllStudentsUseCase
+        private readonly getAllStudentsUseCase: GetAllStudentsUseCase,
+        private readonly updateImageUseCase: UpdateImageUseCase
     ) {}
 
     async getAllStudents(query: GetStudentQueryDto, user: IUserAuthentication) {
@@ -38,5 +40,11 @@ export class StudentService {
     async deleteStudent(id: string) {
         return await this.deleteStudentUseCase.execute(id);
     }
+
+    async handleUploadAvatar(file: Express.Multer.File) {
+        return await this.updateImageUseCase.execute(file);
+    }
+
+
 
 }

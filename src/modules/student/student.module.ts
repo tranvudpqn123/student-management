@@ -17,6 +17,7 @@ import { UpdateStudentUseCase } from "./use-cases/update-student.use-case";
 import { DeleteStudentUseCase } from "./use-cases/delete-student.use-case";
 import { GetStudentDetailUseCase } from "./use-cases/get-student-detail.use-case";
 import { GetAllStudentsUseCase } from "./use-cases/get-all-students.use-case";
+import { UpdateImageUseCase } from "./use-cases/upload-image.use-case";
 
 @Module({
     controllers: [StudentController],
@@ -31,6 +32,7 @@ import { GetAllStudentsUseCase } from "./use-cases/get-all-students.use-case";
         GetStudentDetailUseCase,
         GetAllStudentsUseCase,
         StudentUtilityUseCase,
+        UpdateImageUseCase,
         StudentService,
         JwtStrategyProvider,       
     ],

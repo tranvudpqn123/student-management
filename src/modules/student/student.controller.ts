@@ -131,6 +131,6 @@ export class StudentController {
         }
     }))
     async uploadAvatar(@UploadedFile() file: Express.Multer.File) {
-        return { filename: file.filename, path: file.path.replace(/\\/g, '/') };
+        return this.studentService.handleUploadAvatar(file);
     }
 }
