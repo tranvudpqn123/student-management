@@ -1,5 +1,5 @@
 import { BaseRepositoryInterface } from "src/repository/base.repository.interfact";
-import { RefreshToken } from "../refresh-token.entity";
+import { RefreshToken } from "../entities/refresh-token.entity";
 
 export const REFRESH_TOKEN_REPOSITORY = 'REFRESH_TOKEN_REPOSITORY';
 

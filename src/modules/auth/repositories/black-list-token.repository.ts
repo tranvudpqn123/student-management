@@ -1,7 +1,7 @@
 import { BaseRepository } from "src/repository/base.repository";
-import { BlackListToken } from "./black-list-token.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { BlackListToken } from "../entities/black-list-token.entity";
 
 export class BlackListTokenRepository extends BaseRepository<BlackListToken> {
     constructor(

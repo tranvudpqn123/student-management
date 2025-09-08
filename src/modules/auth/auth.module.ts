@@ -8,12 +8,12 @@ import { ConfigModule } from '@nestjs/config';
 import authConfig from './../../config/auth.config';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RefreshToken } from './refresh-token.entity';
-import { RefreshTokenRepository } from './refresh-token.repository';
-import { BlackListToken } from './black-list-token.entity';
-import { BlackListTokenRepository } from './black-list-token.repository';
+import { RefreshToken } from './entities/refresh-token.entity';
+import { BlackListToken } from './entities/black-list-token.entity';
 import { BLACK_LIST_TOKEN_REPOSITORY } from './interfaces/black-list-token.repository.interface';
 import { REFRESH_TOKEN_REPOSITORY } from './interfaces/refresh-token.repository.interfact';
+import { RefreshTokenRepository } from './repositories/refresh-token.repository';
+import { BlackListTokenRepository } from './repositories/black-list-token.repository';
 
 @Module({
     controllers: [AuthController],

@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { BlackListTokenRepository } from "src/modules/auth/black-list-token.repository";
 import { BLACK_LIST_TOKEN_REPOSITORY } from "src/modules/auth/interfaces/black-list-token.repository.interface";
+import { BlackListTokenRepository } from "src/modules/auth/repositories/black-list-token.repository";
 
 @Injectable()
 export class BlackListGuard implements CanActivate {
