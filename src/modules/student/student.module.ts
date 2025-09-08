@@ -11,6 +11,12 @@ import { JwtModule } from "@nestjs/jwt";
 import { UserModule } from "../user/user.module";
 import { AuthModule } from "../auth/auth.module";
 import { STUDENT_REPOSITORY  } from "./interfaces/student.repository.interface";
+import { CreateStudentUseCase } from "./use-case/create-student.use-case";
+import { StudentUtilityUseCase } from "./use-case/student-utility.use-case";
+import { UpdateStudentUseCase } from "./use-case/update-student.use-case";
+import { DeleteStudentUseCase } from "./use-case/delete-student.use-case";
+import { GetStudentDetailUseCase } from "./use-case/get-student-detail.use-case";
+import { GetAllStudentUseCase } from "./use-case/get-all-student.use-case";
 
 @Module({
     controllers: [StudentController],
@@ -19,6 +25,12 @@ import { STUDENT_REPOSITORY  } from "./interfaces/student.repository.interface";
             provide: STUDENT_REPOSITORY ,
             useClass: StudentRepository
         },
+        CreateStudentUseCase,
+        UpdateStudentUseCase,
+        DeleteStudentUseCase,
+        GetStudentDetailUseCase,
+        GetAllStudentUseCase,
+        StudentUtilityUseCase,
         StudentService,
         JwtStrategyProvider,       
     ],

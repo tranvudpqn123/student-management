@@ -11,7 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshToken } from './refresh-token.entity';
 import { RefreshTokenRepository } from './refresh-token.repository';
 import { BlackListToken } from './black-list-token.entity';
-import { BlackListTokenReposiptory } from './black-list-token.repository';
+import { BlackListTokenRepository } from './black-list-token.repository';
 import { BLACK_LIST_TOKEN_REPOSITORY } from './interfaces/black-list-token.repository.interface';
 import { REFRESH_TOKEN_REPOSITORY } from './interfaces/refresh-token.repository.interfact';
 
@@ -25,7 +25,7 @@ import { REFRESH_TOKEN_REPOSITORY } from './interfaces/refresh-token.repository.
         },
         {
             provide: BLACK_LIST_TOKEN_REPOSITORY,
-            useClass: BlackListTokenReposiptory
+            useClass: BlackListTokenRepository
         },
         {
             provide: HashingProvider,
@@ -38,6 +38,6 @@ import { REFRESH_TOKEN_REPOSITORY } from './interfaces/refresh-token.repository.
         ConfigModule.forFeature(authConfig),
         JwtModule.registerAsync(authConfig.asProvider())
     ],
-    exports: [BlackListTokenReposiptory]
+    exports: [BLACK_LIST_TOKEN_REPOSITORY]
 })
 export class AuthModule { }

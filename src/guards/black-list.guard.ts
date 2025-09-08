@@ -1,9 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { BlackListTokenReposiptory } from "src/modules/auth/black-list-token.repository";
+import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import { BlackListTokenRepository } from "src/modules/auth/black-list-token.repository";
+import { BLACK_LIST_TOKEN_REPOSITORY } from "src/modules/auth/interfaces/black-list-token.repository.interface";
 
 @Injectable()
 export class BlackListGuard implements CanActivate {
-    constructor(private readonly blackListTokenRepository: BlackListTokenReposiptory) {
+    constructor(
+        @Inject(BLACK_LIST_TOKEN_REPOSITORY)
+        private readonly blackListTokenRepository: BlackListTokenRepository
+    ) {
 
     }
 
