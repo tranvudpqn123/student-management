@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
@@ -9,6 +9,9 @@ import { RoleGuard } from 'src/guards/role.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { ROLES } from 'src/common/role.enum';
 import { BlackListGuard } from 'src/guards/black-list.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @ApiTags('students')
 @UseGuards(AuthGuard('jwt'), BlackListGuard)
@@ -40,7 +43,7 @@ export class StudentController {
     async getStudent(@Param('id') id: string) {
         return await this.studentService.getStudent(id);
     }
-    
+
     @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
     @UseGuards(RoleGuard)
     @Post()
@@ -106,5 +109,28 @@ export class StudentController {
     @ApiResponse({ status: 400, description: 'Bad request' })
     deleteStudent(@Param('id') id: string) {
         return this.studentService.deleteStudent(id);
+    }
+
+    @Post('upload-avatar')
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: './uploads', // Thư mục lưu file
+            filename: (req, file, cb) => {
+                // Đặt tên file: studentId + đuôi file
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                cb(null, uniqueSuffix + extname(file.originalname));
+            }
+        }),
+        limits: { fileSize: 2 * 1024 * 1024 }, // Giới hạn file 2MB
+        fileFilter: (req, file, cb) => {
+            // Chỉ cho phép file ảnh
+            if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+                return cb(new Error('Only image files are allowed!'), false);
+            }
+            cb(null, true);
+        }
+    }))
+    async uploadAvatar(@UploadedFile() file: Express.Multer.File) {
+        return { filename: file.filename, path: file.path.replace(/\\/g, '/') };
     }
 }

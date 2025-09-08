@@ -1,6 +1,5 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateDepartmentDto } from './dtos/create-department.dto';
-import { ERROR_MESSAGES } from 'src/constants/error-message';
 import { UpdateDepartmentDto } from './dtos/update-department.dto';
 import { DEPARTMENT_REPOSITORY, IDepartmentRepository } from './interfaces/department.repository.interface';
 import { CreateDepartmentUseCase } from './use-cases/create-department.use-case';
