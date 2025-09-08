@@ -3,11 +3,11 @@ import { CreateStudentDto } from './dtos/create-student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 import { IUserAuthentication } from 'src/models/user-authentication.interface';
-import { CreateStudentUseCase } from './use-case/create-student.use-case';
-import { UpdateStudentUseCase } from './use-case/update-student.use-case';
-import { DeleteStudentUseCase } from './use-case/delete-student.use-case';
-import { GetStudentDetailUseCase } from './use-case/get-student-detail.use-case';
-import { GetAllStudentUseCase } from './use-case/get-all-student.use-case';
+import { CreateStudentUseCase } from './use-cases/create-student.use-case';
+import { UpdateStudentUseCase } from './use-cases/update-student.use-case';
+import { DeleteStudentUseCase } from './use-cases/delete-student.use-case';
+import { GetStudentDetailUseCase } from './use-cases/get-student-detail.use-case';
+import { GetAllStudentsUseCase } from './use-cases/get-all-students.use-case';
 
 @Injectable()
 export class StudentService {
@@ -16,11 +16,11 @@ export class StudentService {
         private readonly updateStudentUseCase: UpdateStudentUseCase,  
         private readonly deleteStudentUseCase: DeleteStudentUseCase,  
         private readonly getStudentDetailUseCase: GetStudentDetailUseCase,
-        private readonly getAllStudentUseCase: GetAllStudentUseCase
+        private readonly getAllStudentsUseCase: GetAllStudentsUseCase
     ) {}
 
     async getAllStudents(query: GetStudentQueryDto, user: IUserAuthentication) {
-        return await this.getAllStudentUseCase.execute(query, user);
+        return await this.getAllStudentsUseCase.execute(query, user);
     }
 
     async getStudent(id: string) {

@@ -1,25 +1,24 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Department } from './department.entity';
-import { Repository } from 'typeorm';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateDepartmentDto } from './dtos/create-department.dto';
 import { ERROR_MESSAGES } from 'src/constants/error-message';
 import { UpdateDepartmentDto } from './dtos/update-department.dto';
 import { DEPARTMENT_REPOSITORY, IDepartmentRepository } from './interfaces/department.repository.interface';
+import { CreateDepartmentUseCase } from './use-cases/create-department.use-case';
+import { UpdateDepartmentUseCase } from './use-cases/update-department.use-case';
+import { DeleteDepartmentUseCase } from './use-cases/delete-department.use-case';
 
 @Injectable()
 export class DepartmentService {
     constructor(
         @Inject(DEPARTMENT_REPOSITORY)
-        private readonly departmentRepository: IDepartmentRepository
+        private readonly departmentRepository: IDepartmentRepository,
+        private readonly createDepartmentUseCase: CreateDepartmentUseCase,
+        private readonly updateDepartmentUseCase: UpdateDepartmentUseCase,
+        private readonly deleteDepartmentUseCase: DeleteDepartmentUseCase
     ) {}
 
     async createDepartment(department: CreateDepartmentDto) {
-        const departmentExists = await this.departmentRepository.findOneBy({ name: department.name });
-        if (departmentExists) {
-            throw new BadRequestException(ERROR_MESSAGES.ALREADY_EXISTS('Department', department.name));
-        }
-        return await this.departmentRepository.create(department);
+        return this.createDepartmentUseCase.execute(department);
     }
 
     async getDepartmentByIds(ids: string[]) {
@@ -41,22 +40,10 @@ export class DepartmentService {
     }
 
     async updateDepartment(id: string, department: UpdateDepartmentDto) {
-        const existingDepartment = await this.departmentRepository.findOneBy({ id });
-        if (!existingDepartment) {
-            throw new NotFoundException(ERROR_MESSAGES.NOT_FOUND_BY_ID(id, 'Department'));
-        }
-        Object.assign(existingDepartment, department);
-
-        return await this.departmentRepository.update(id, existingDepartment);
+        return this.updateDepartmentUseCase.execute(id, department);
     }
 
     async deleteDepartment(id: string) {
-        const department = await this.departmentRepository.findOneBy({ id });
-        if (department) {
-            await this.departmentRepository.delete(id);
-            return department;
-        }
-
-        throw new NotFoundException(ERROR_MESSAGES.NOT_FOUND_BY_ID(id, 'Department'));
+        return this.deleteDepartmentUseCase.execute(id);
     }
 }

@@ -1,56 +1,29 @@
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { CreateTeacherDto } from "./dtos/create-teacher.dto";
-import { ERROR_MESSAGES } from "src/constants/error-message";
-import { Department } from "../department/department.entity";
-import { DepartmentService } from "../department/department.service";
 import { GetTeacherQueryDto } from "./dtos/get-teacher-query.dto";
-import { Like } from "typeorm";
-import { ITeacherRepository, TEACHER_REPOSITORY } from "./interface/teacher.repository.interface";
+import { CreateTeacherUseCase } from "./use-cases/create-teacher.use-case";
+import { DeleteTeacherUseCase } from "./use-cases/delete-teacher.use-case";
+import { GetAllTeachersUseCase } from "./use-cases/get-all-teachers.use-case";
 
 @Injectable()
 export class TeacherService {
 
     constructor(
-        @Inject(TEACHER_REPOSITORY)
-        private readonly teacherRepository: ITeacherRepository,
-        private readonly departmentService: DepartmentService
+        private readonly createTeacherUseCase: CreateTeacherUseCase,
+        private readonly deleteTeacherUseCase: DeleteTeacherUseCase,
+        private readonly getAllTeachersUseCase: GetAllTeachersUseCase
     ) {}
 
     async createTeacher(createTeacherDto: CreateTeacherDto) {
-        const teacherExists = await this.teacherRepository.findOneBy({ email: createTeacherDto.email });
-        if (teacherExists) {
-            throw new BadRequestException(ERROR_MESSAGES.ALREADY_EXISTS_EMAIL(teacherExists.email, 'Teacher'));
-        }
-
-        let departments: Department[] = [];
-        if (createTeacherDto.departmentIds && createTeacherDto.departmentIds.length > 0) {
-            departments = await this.departmentService.getDepartmentByIds(createTeacherDto.departmentIds);
-        }
-
-        return this.teacherRepository.create({
-            ...createTeacherDto,
-            departments
-        });
+        return this.createTeacherUseCase.execute(createTeacherDto);
     }
 
     async getTeachers(query: GetTeacherQueryDto) {
-        return this.teacherRepository.findAll(
-            query.limit * (query.page - 1),
-            query.limit,
-            ['departments'],
-            {
-                lastName: Like(`%${query.lastName}%`) // ILIKE '%value%' (case-insensitive)
-            }
-        );
+        return this.getAllTeachersUseCase.execute(query);
     }
 
     async deleteTeacher(id: string) {
-        const deletedTeacher = await this.teacherRepository.findById(id);
-        if (!deletedTeacher) {
-            throw new BadRequestException(ERROR_MESSAGES.NOT_FOUND_BY_ID('Teacher', id));
-        }
-        await this.teacherRepository.delete(id);
-        return deletedTeacher;
+        return this.deleteTeacherUseCase.execute(id);
     }
 
 }

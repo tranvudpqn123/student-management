@@ -11,12 +11,12 @@ import { JwtModule } from "@nestjs/jwt";
 import { UserModule } from "../user/user.module";
 import { AuthModule } from "../auth/auth.module";
 import { STUDENT_REPOSITORY  } from "./interfaces/student.repository.interface";
-import { CreateStudentUseCase } from "./use-case/create-student.use-case";
-import { StudentUtilityUseCase } from "./use-case/student-utility.use-case";
-import { UpdateStudentUseCase } from "./use-case/update-student.use-case";
-import { DeleteStudentUseCase } from "./use-case/delete-student.use-case";
-import { GetStudentDetailUseCase } from "./use-case/get-student-detail.use-case";
-import { GetAllStudentUseCase } from "./use-case/get-all-student.use-case";
+import { CreateStudentUseCase } from "./use-cases/create-student.use-case";
+import { StudentUtilityUseCase } from "./use-cases/student-utility.use-case";
+import { UpdateStudentUseCase } from "./use-cases/update-student.use-case";
+import { DeleteStudentUseCase } from "./use-cases/delete-student.use-case";
+import { GetStudentDetailUseCase } from "./use-cases/get-student-detail.use-case";
+import { GetAllStudentsUseCase } from "./use-cases/get-all-students.use-case";
 
 @Module({
     controllers: [StudentController],
@@ -29,7 +29,7 @@ import { GetAllStudentUseCase } from "./use-case/get-all-student.use-case";
         UpdateStudentUseCase,
         DeleteStudentUseCase,
         GetStudentDetailUseCase,
-        GetAllStudentUseCase,
+        GetAllStudentsUseCase,
         StudentUtilityUseCase,
         StudentService,
         JwtStrategyProvider,       

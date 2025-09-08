@@ -9,7 +9,7 @@ import { GetStudentQueryDto } from "../dtos/get-student-query.dto";
 import { IUserAuthentication } from "src/models/user-authentication.interface";
 
 @Injectable()
-export class GetAllStudentUseCase {
+export class GetAllStudentsUseCase {
 
     constructor(
         private readonly departmentService: DepartmentService,        

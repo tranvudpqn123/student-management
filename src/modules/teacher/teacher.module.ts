@@ -6,10 +6,16 @@ import { TeacherService } from './teacher.service';
 import { TeacherRepository } from './teacher.repository';
 import { DepartmentModule } from '../department/department.module';
 import { TEACHER_REPOSITORY } from './interface/teacher.repository.interface';
+import { CreateTeacherUseCase } from './use-cases/create-teacher.use-case';
+import { DeleteTeacherUseCase } from './use-cases/delete-teacher.use-case';
+import { GetAllTeachersUseCase } from './use-cases/get-all-teachers.use-case';
 
 @Module({
     providers: [
         TeacherService, 
+        CreateTeacherUseCase,
+        DeleteTeacherUseCase,
+        GetAllTeachersUseCase,
         {
             provide: TEACHER_REPOSITORY,
             useClass: TeacherRepository
