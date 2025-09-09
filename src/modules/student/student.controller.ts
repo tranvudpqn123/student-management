@@ -7,7 +7,7 @@ import { ApiBody, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/s
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from 'src/guards/role.guard';
 import { Roles } from 'src/decorators/roles.decorator';
-import { ROLES } from 'src/common/role.enum';
+import { ROLES } from 'src/common/enums/role.enum';
 import { BlackListGuard } from 'src/guards/black-list.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';

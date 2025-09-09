@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+// Models
 import mysqlConfiguration from './config/mysql-configuration';
 import envValidation from './config/env.validation';
-import { TypeOrmModule } from '@nestjs/typeorm';
+// Modules
 import { DepartmentModule } from './modules/department/department.module';
 import { StudentModule } from './modules/student/student.module';
 import { SubjectModule } from './modules/subject/subject.module';
@@ -12,9 +13,15 @@ import { TeacherModule } from './modules/teacher/teacher.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
+//Others
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { NotificationListener } from './listeners/notification.listener';
+
 
 @Module({
     imports: [
+        EventEmitterModule.forRoot(),
         StudentModule,
         ConfigModule.forRoot({
             isGlobal: true,
@@ -37,6 +44,7 @@ import { RoleModule } from './modules/role/role.module';
                 };
             }
         }),
+        // Custom Modules
         DepartmentModule,
         SubjectModule,
         TeacherModule,
@@ -45,6 +53,6 @@ import { RoleModule } from './modules/role/role.module';
         RoleModule,
     ],
     controllers: [AppController],
-    providers: [AppService],
+    providers: [AppService, NotificationListener],
 })
 export class AppModule { }

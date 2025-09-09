@@ -5,7 +5,7 @@ import { GetUserQueryDto } from './dtos/get-user-query.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { request } from 'express';
 import { Roles } from 'src/decorators/roles.decorator';
-import { ROLES } from 'src/common/role.enum';
+import { ROLES } from 'src/common/enums/role.enum';
 import { RoleGuard } from 'src/guards/role.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 

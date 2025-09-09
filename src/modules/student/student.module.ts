@@ -18,6 +18,7 @@ import { DeleteStudentUseCase } from "./use-cases/delete-student.use-case";
 import { GetStudentDetailUseCase } from "./use-cases/get-student-detail.use-case";
 import { GetAllStudentsUseCase } from "./use-cases/get-all-students.use-case";
 import { UpdateImageUseCase } from "./use-cases/upload-image.use-case";
+import { StudentEventsListener } from "./student.event-listener";
 
 @Module({
     controllers: [StudentController],
@@ -34,6 +35,7 @@ import { UpdateImageUseCase } from "./use-cases/upload-image.use-case";
         StudentUtilityUseCase,
         UpdateImageUseCase,
         StudentService,
+        StudentEventsListener,
         JwtStrategyProvider,       
     ],
     imports: [

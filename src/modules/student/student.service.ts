@@ -9,10 +9,12 @@ import { DeleteStudentUseCase } from './use-cases/delete-student.use-case';
 import { GetStudentDetailUseCase } from './use-cases/get-student-detail.use-case';
 import { GetAllStudentsUseCase } from './use-cases/get-all-students.use-case';
 import { UpdateImageUseCase } from './use-cases/upload-image.use-case';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class StudentService {
     constructor(
+        private readonly eventEmitter: EventEmitter2,
         private readonly createStudentUseCase: CreateStudentUseCase,
         private readonly updateStudentUseCase: UpdateStudentUseCase,  
         private readonly deleteStudentUseCase: DeleteStudentUseCase,  
@@ -30,7 +32,9 @@ export class StudentService {
     }
 
     async createStudent(userId: string, student: CreateStudentDto) {
-        return await this.createStudentUseCase.execute(userId, student);
+        const newStudent =  await this.createStudentUseCase.execute(userId, student);
+        this.eventEmitter.emit('student.created', newStudent);
+        return newStudent;
     }
 
     async updateStudent(id: string, student: UpdateStudentDto) {

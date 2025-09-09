@@ -11,11 +11,14 @@ import { Users } from '../user/user.entity';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { IRefreshTokenRepository, REFRESH_TOKEN_REPOSITORY } from './interfaces/refresh-token.repository.interfact';
 import { BLACK_LIST_TOKEN_REPOSITORY, IBlackListTokenRepository } from './interfaces/black-list-token.repository.interface';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CHANNELS } from 'src/common/enums/chanels.enum';
 
 @Injectable()
 export class AuthService {
 
     constructor(
+        private readonly eventEmitter: EventEmitter2,
         @Inject(authConfig.KEY)
         private readonly authConfiguration: ConfigType<typeof authConfig>,
         private readonly userService: UserService,
@@ -48,7 +51,7 @@ export class AuthService {
 
             const generatedToken = await this.generateToken(user);
             await this.registerRefreshToken(user, generatedToken.refreshToken);
-
+            this.eventEmitter.emit(CHANNELS.EMAIL, { to: user.email, subject: 'Login Notification', body: 'You have successfully logged in.' });
 
             return generatedToken;
 

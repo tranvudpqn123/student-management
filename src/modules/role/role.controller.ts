@@ -2,7 +2,7 @@ import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { RoleService } from './role.service';
 import { Roles } from 'src/decorators/roles.decorator';
-import { ROLES } from 'src/common/role.enum';
+import { ROLES } from 'src/common/enums/role.enum';
 import { AuthGuard } from '@nestjs/passport';
 
 @UseGuards(AuthGuard('jwt'))

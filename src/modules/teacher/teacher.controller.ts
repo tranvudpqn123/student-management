@@ -4,7 +4,7 @@ import { TeacherService } from './teacher.service';
 import { GetTeacherQueryDto } from './dtos/get-teacher-query.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/decorators/roles.decorator';
-import { ROLES } from 'src/common/role.enum';
+import { ROLES } from 'src/common/enums/role.enum';
 import { AuthGuard } from '@nestjs/passport';
 
 @UseGuards(AuthGuard('jwt'))
