@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 // Models
 import mysqlConfiguration from './config/mysql-configuration';
+import redisConfiguration from './config/redis.configuration';
 import envValidation from './config/env.validation';
 // Modules
 import { DepartmentModule } from './modules/department/department.module';
@@ -17,6 +18,7 @@ import { RoleModule } from './modules/role/role.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NotificationListener } from './listeners/notification.listener';
+import { BullModule } from '@nestjs/bullmq';
 
 
 @Module({
@@ -25,7 +27,7 @@ import { NotificationListener } from './listeners/notification.listener';
         StudentModule,
         ConfigModule.forRoot({
             isGlobal: true,
-            load: [mysqlConfiguration],
+            load: [mysqlConfiguration, redisConfiguration],
             validationSchema: envValidation
         }),
         TypeOrmModule.forRootAsync({
@@ -41,6 +43,18 @@ import { NotificationListener } from './listeners/notification.listener';
                     database: mysqlConfig.database,
                     synchronize: mysqlConfig.synchronize,
                     autoLoadEntities: mysqlConfig.autoLoadEntities
+                };
+            }
+        }),
+        BullModule.forRootAsync({
+            inject: [ConfigService],
+            useFactory: (configService: ConfigService) => {
+                const redisConfig = configService.get('redis');
+                return {
+                    connection: {
+                        host: redisConfig.host,
+                        port: redisConfig.port
+                    }
                 };
             }
         }),

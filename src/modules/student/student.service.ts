@@ -10,10 +10,17 @@ import { GetStudentDetailUseCase } from './use-cases/get-student-detail.use-case
 import { GetAllStudentsUseCase } from './use-cases/get-all-students.use-case';
 import { UpdateImageUseCase } from './use-cases/upload-image.use-case';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { QUEUE_NAME } from 'src/common/enums/queue-name.enum';
 
 @Injectable()
 export class StudentService {
     constructor(
+        @InjectQueue(
+            QUEUE_NAME.IMAGE_OPTIMIZE
+        )
+        private readonly imageQueue: Queue,
         private readonly eventEmitter: EventEmitter2,
         private readonly createStudentUseCase: CreateStudentUseCase,
         private readonly updateStudentUseCase: UpdateStudentUseCase,  
@@ -46,6 +53,9 @@ export class StudentService {
     }
 
     async handleUploadAvatar(file: Express.Multer.File) {
+        await this.imageQueue.add('resize', { file }, {
+            
+        });
         return await this.updateImageUseCase.execute(file);
     }
 

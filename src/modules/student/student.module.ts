@@ -19,6 +19,9 @@ import { GetStudentDetailUseCase } from "./use-cases/get-student-detail.use-case
 import { GetAllStudentsUseCase } from "./use-cases/get-all-students.use-case";
 import { UpdateImageUseCase } from "./use-cases/upload-image.use-case";
 import { StudentEventsListener } from "./student.event-listener";
+import { BullModule } from "@nestjs/bullmq";
+import { ImageProcessingService } from './image-processing.service';
+import { QUEUE_NAME } from "src/common/enums/queue-name.enum";
 
 @Module({
     controllers: [StudentController],
@@ -36,10 +39,16 @@ import { StudentEventsListener } from "./student.event-listener";
         UpdateImageUseCase,
         StudentService,
         StudentEventsListener,
-        JwtStrategyProvider,       
+        JwtStrategyProvider,
+        ImageProcessingService,       
     ],
     imports: [
         PassportModule,
+        
+        BullModule.registerQueue({
+            name: QUEUE_NAME.IMAGE_OPTIMIZE,
+            prefix: 'student'
+        }),
         JwtModule.register({
             secret: process.env.JWT_TOKEN_SECRET,
             signOptions: { expiresIn: process.env.JWT_TOKEN_EXPIRATION },
