@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { WinstonModule } from 'nest-winston';
 // Models
 import mysqlConfiguration from './config/mysql-configuration';
 import redisConfiguration from './config/redis.configuration';
@@ -19,6 +20,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NotificationListener } from './listeners/notification.listener';
 import { BullModule } from '@nestjs/bullmq';
+import { winstonLoggerOptions } from './common/logger/winston.logger';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 
 
 @Module({
@@ -58,6 +62,7 @@ import { BullModule } from '@nestjs/bullmq';
                 };
             }
         }),
+        WinstonModule.forRoot(winstonLoggerOptions),
         // Custom Modules
         DepartmentModule,
         SubjectModule,
@@ -67,6 +72,13 @@ import { BullModule } from '@nestjs/bullmq';
         RoleModule,
     ],
     controllers: [AppController],
-    providers: [AppService, NotificationListener],
+    providers: [
+        AppService, 
+        NotificationListener,
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: LoggingInterceptor
+        }
+    ],
 })
 export class AppModule { }

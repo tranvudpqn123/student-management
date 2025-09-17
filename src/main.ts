@@ -17,7 +17,7 @@ async function bootstrap() {
     // app.use(LoggerMiddleware);
     // app.use(ResponseLoggerMiddleware)
 
-    app.useGlobalInterceptors(new LoggingInterceptor(), new ResponseInterceptor())
+    app.useGlobalInterceptors(new ResponseInterceptor())
 
 
     // Cấu hình Swagger
