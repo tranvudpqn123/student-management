@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './dtos/create-student.dto';
-import { UpdateStudentDto } from './dtos/update-student.dto';
-import { GetStudentQueryDto } from './dtos/get-student-query.dto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { QUEUE_NAME } from 'src/common/enums/queue-name.enum';
+// Use case
 import { IUserAuthentication } from 'src/models/user-authentication.interface';
 import { CreateStudentUseCase } from './use-cases/create-student.use-case';
 import { UpdateStudentUseCase } from './use-cases/update-student.use-case';
 import { DeleteStudentUseCase } from './use-cases/delete-student.use-case';
 import { GetStudentDetailUseCase } from './use-cases/get-student-detail.use-case';
 import { GetAllStudentsUseCase } from './use-cases/get-all-students.use-case';
-import { UpdateImageUseCase } from './use-cases/upload-image.use-case';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
-import { QUEUE_NAME } from 'src/common/enums/queue-name.enum';
+// DTO
+import { CreateStudentDto } from './dtos/create-student.dto';
+import { UpdateStudentDto } from './dtos/update-student.dto';
+import { GetStudentQueryDto } from './dtos/get-student-query.dto';
 
 @Injectable()
 export class StudentService {
@@ -26,8 +27,7 @@ export class StudentService {
         private readonly updateStudentUseCase: UpdateStudentUseCase,  
         private readonly deleteStudentUseCase: DeleteStudentUseCase,  
         private readonly getStudentDetailUseCase: GetStudentDetailUseCase,
-        private readonly getAllStudentsUseCase: GetAllStudentsUseCase,
-        private readonly updateImageUseCase: UpdateImageUseCase
+        private readonly getAllStudentsUseCase: GetAllStudentsUseCase
     ) {}
 
     async getAllStudents(query: GetStudentQueryDto, user: IUserAuthentication) {
@@ -53,10 +53,7 @@ export class StudentService {
     }
 
     async handleUploadAvatar(file: Express.Multer.File) {
-        await this.imageQueue.add('resize', { file }, {
-            
-        });
-        return await this.updateImageUseCase.execute(file);
+        return await this.imageQueue.add('resize', { file });
     }
 
 

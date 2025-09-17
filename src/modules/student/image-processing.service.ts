@@ -1,19 +1,20 @@
 import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
-// import { Job } from 'bullmq';
+import { Job } from 'bullmq';
 import { QUEUE_NAME } from 'src/common/enums/queue-name.enum';
+import { UpdateImageUseCase } from './use-cases/upload-image.use-case';
 
 @Processor(QUEUE_NAME.IMAGE_OPTIMIZE)
 @Injectable()
 export class ImageProcessingService extends WorkerHost {
-    async process(job: Job) {
-        // Xử lý ảnh ở đây (resize, crop, ...)
-        console.log('Processing image:', job.data);
-        // Ví dụ: gọi sharp để resize ảnh
+    constructor(
+        private readonly updateImageUseCase: UpdateImageUseCase
+    ) {
+        super();
+    }
 
-        return await new Promise((resolve) =>
-			setTimeout(() => resolve(job.data), 30000),
-		);
+    async process(job: Job) {
+        return await this.updateImageUseCase.execute(job.data.file);
     }
 
     @OnWorkerEvent('completed')
@@ -33,10 +34,3 @@ export class ImageProcessingService extends WorkerHost {
 
 
 }
-
-import { Queue } from 'bullmq';
-
-const myQueue = new Queue('Paint');
-
-const counts = await myQueue.getJobCounts('wait', 'completed', 'failed');
-// Returns an object like this { wait: number, completed: number, failed: number }
