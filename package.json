@@ -38,6 +38,7 @@
     "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "crypto": "^1.0.1",
     "ioredis": "^5.7.0",
     "joi": "^18.0.0",
     "multer": "^2.0.2",
@@ -49,6 +50,7 @@
     "rxjs": "^7.8.1",
     "sharp": "^0.34.3",
     "typeorm": "^0.3.25",
+    "uuid": "^13.0.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
@@ -64,6 +66,7 @@
     "@types/multer": "^2.0.0",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "@types/uuid": "^11.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",

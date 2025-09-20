@@ -21,6 +21,7 @@ import { RoleModule } from './modules/role/role.module';
 // Interceptors
 import { CacheInterceptor } from './interceptors/cache.interceptor';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { GenerateRequestIdInterceptor } from './interceptors/generate-request-id.interceptor';
 //Others
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -107,6 +108,10 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
         {
             provide: APP_INTERCEPTOR,
             useClass: CacheInterceptor
+        },
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: GenerateRequestIdInterceptor
         }
     ],
 })

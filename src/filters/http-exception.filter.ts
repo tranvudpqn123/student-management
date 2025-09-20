@@ -1,5 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, Inject, Logger } from "@nestjs/common";
 import { Request, Response } from 'express';
+import { EHEADER_KEY } from "src/common/enums/header-key.enum";
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -14,7 +15,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const status = exception.getStatus();
         const message = exception.message;
         const stack = exception.stack;
-        const requestId = request.headers['x-request-id'] || '';
+        const requestId = request.headers[EHEADER_KEY.REQUEST_ID] || '';
 
         if ([400, 404, 500].includes(status)) {
             const logData = {
@@ -31,11 +32,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
             };
             this.logger.error(logData);
         }
-
-        // Trả về response mặc định của NestJS
         response
             .status(status)
-            .json(exception.getResponse());
+            .json({
+                ...exception.getResponse(),
+                requestId
+            });
 
     }
 }

@@ -4,14 +4,14 @@ import * as winston from 'winston';
 export const winstonLoggerOptions: winston.LoggerOptions = {
     transports: [
         // Ghi log ra console
-        new winston.transports.Console({
-            format: winston.format.combine(
-                // Thêm timestamp vào log
-                winston.format.timestamp(), 
-                // Định dạng log theo phong cách của NestJS, tên app là 'StudentManagement'
-                nestWinstonModuleUtilities.format.nestLike('StudentManagement', { prettyPrint: true })
-            )
-        }),
+        // new winston.transports.Console({
+        //     format: winston.format.combine(
+        //         // Thêm timestamp vào log
+        //         winston.format.timestamp(), 
+        //         // Định dạng log theo phong cách của NestJS, tên app là 'StudentManagement'
+        //         nestWinstonModuleUtilities.format.nestLike('StudentManagement', { prettyPrint: true })
+        //     )
+        // }),
         // Ghi log ra file
         new winston.transports.File({
             // đường dẫn

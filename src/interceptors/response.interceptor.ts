@@ -4,8 +4,10 @@ import { map, Observable } from "rxjs";
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
     intercept(context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
-        const res = context.switchToHttp().getResponse();
-        const statusCode = res.statusCode;
+        const ctx = context.switchToHttp();
+        const response = ctx.getResponse();
+        
+        const statusCode = response.statusCode;
 
         
         return next.handle()
@@ -14,7 +16,7 @@ export class ResponseInterceptor implements NestInterceptor {
                 const dataResponse = {
                     data: data,
                     statusCode: statusCode,
-                    statusMessage: res.statusMessage,
+                    statusMessage: response.statusMessage
                 };
                 return dataResponse;
             })
