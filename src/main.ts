@@ -8,9 +8,18 @@ import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { connect } from 'http2';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
+import helmet from 'helmet';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+    app.use(helmet());
+    app.enableCors(
+        {
+            origin: 'https://your-frontend-domain.com', // thay bằng domain FE thực tế
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+            credentials: true,
+        }
+    );
     app.useGlobalPipes(new ValidationPipe({
         whitelist: true,
         forbidNonWhitelisted: true,

@@ -28,6 +28,7 @@ import { AppService } from './app.service';
 import { NotificationListener } from './listeners/notification.listener';
 import { winstonLoggerOptions } from './common/logger/winston.logger';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 
 
@@ -35,7 +36,6 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 @Module({
     imports: [
         EventEmitterModule.forRoot(),
-        StudentModule,
         ConfigModule.forRoot({
             isGlobal: true,
             load: [mysqlConfiguration, redisConfiguration],
@@ -85,7 +85,16 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
             }
         }),
         WinstonModule.forRoot(winstonLoggerOptions),
+        ThrottlerModule.forRoot({
+            throttlers: [
+                {
+                    ttl: 60000,
+                    limit: 10,
+                },
+            ],
+        }),
         // Custom Modules
+        StudentModule,
         DepartmentModule,
         SubjectModule,
         TeacherModule,
