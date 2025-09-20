@@ -9,7 +9,8 @@ export class GetStudentDetailUseCase {
     ) { }
 
     async execute(id: string) {
-        const student = this.studentUtility.getStudentById(id);
+        const student = await this.studentUtility.getStudentById(id);
+        console.log('student: ', student)
         if (!student) {
             throw new NotFoundException(ERROR_MESSAGES.NOT_FOUND_BY_ID(id, 'Student'));
         }

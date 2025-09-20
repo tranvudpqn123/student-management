@@ -22,6 +22,7 @@ import { StudentEventsListener } from "./student.event-listener";
 import { BullModule } from "@nestjs/bullmq";
 import { ImageProcessingService } from './image-processing.service';
 import { QUEUE_NAME } from "src/common/enums/queue-name.enum";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
     controllers: [StudentController],
@@ -44,6 +45,7 @@ import { QUEUE_NAME } from "src/common/enums/queue-name.enum";
     ],
     imports: [
         PassportModule,
+        CacheModule.register(), // hoặc CacheModule nếu đã global
         
         BullModule.registerQueue({
             name: QUEUE_NAME.IMAGE_OPTIMIZE,

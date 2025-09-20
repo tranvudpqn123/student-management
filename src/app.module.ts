@@ -3,6 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { WinstonModule } from 'nest-winston';
+import { BullModule } from '@nestjs/bullmq';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { CacheModule } from '@nestjs/cache-manager';
 // Models
 import mysqlConfiguration from './config/mysql-configuration';
 import redisConfiguration from './config/redis.configuration';
@@ -15,14 +18,17 @@ import { TeacherModule } from './modules/teacher/teacher.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
+// Interceptors
+import { CacheInterceptor } from './interceptors/cache.interceptor';
+import { LoggingInterceptor } from './interceptors/logging.interceptor';
 //Others
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NotificationListener } from './listeners/notification.listener';
-import { BullModule } from '@nestjs/bullmq';
 import { winstonLoggerOptions } from './common/logger/winston.logger';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { LoggingInterceptor } from './interceptors/logging.interceptor';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
+
+
 
 
 @Module({
@@ -50,6 +56,21 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
                 };
             }
         }),
+        CacheModule.registerAsync({
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => {
+                const redisConfig = configService.get('redis');
+                return {
+                    isGlobal: true,
+                    ttl: 60, // seconds
+                    max: 10, // maximum number of items in cache
+                    store: 'redis',
+                    host: redisConfig.host,
+                    port: redisConfig.port
+                };
+            }
+
+        }),
         BullModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => {
@@ -73,11 +94,19 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
     ],
     controllers: [AppController],
     providers: [
-        AppService, 
+        AppService,
         NotificationListener,
+        {
+            provide: APP_FILTER,
+            useClass: HttpExceptionFilter,
+        },
         {
             provide: APP_INTERCEPTOR,
             useClass: LoggingInterceptor
+        },
+        {
+            provide: APP_INTERCEPTOR,
+            useClass: CacheInterceptor
         }
     ],
 })

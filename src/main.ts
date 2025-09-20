@@ -6,6 +6,8 @@ import { ResponseLoggerMiddleware } from './middlewares/response.middleware';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { connect } from 'http2';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -14,6 +16,7 @@ async function bootstrap() {
         forbidNonWhitelisted: true,
         transform: true,
     }));
+    // app.useGlobalFilters(new HttpExceptionFilter());
     // app.use(LoggerMiddleware);
     // app.use(ResponseLoggerMiddleware)
 

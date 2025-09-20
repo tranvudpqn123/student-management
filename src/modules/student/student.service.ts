@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -14,21 +14,21 @@ import { GetAllStudentsUseCase } from './use-cases/get-all-students.use-case';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { GetStudentQueryDto } from './dtos/get-student-query.dto';
+import { Logger } from 'winston';
 
 @Injectable()
 export class StudentService {
     constructor(
-        @InjectQueue(
-            QUEUE_NAME.IMAGE_OPTIMIZE
-        )
+        @InjectQueue(QUEUE_NAME.IMAGE_OPTIMIZE)
         private readonly imageQueue: Queue,
+        @Inject('winston') private readonly logger: Logger,
         private readonly eventEmitter: EventEmitter2,
         private readonly createStudentUseCase: CreateStudentUseCase,
-        private readonly updateStudentUseCase: UpdateStudentUseCase,  
-        private readonly deleteStudentUseCase: DeleteStudentUseCase,  
+        private readonly updateStudentUseCase: UpdateStudentUseCase,
+        private readonly deleteStudentUseCase: DeleteStudentUseCase,
         private readonly getStudentDetailUseCase: GetStudentDetailUseCase,
         private readonly getAllStudentsUseCase: GetAllStudentsUseCase
-    ) {}
+    ) { }
 
     async getAllStudents(query: GetStudentQueryDto, user: IUserAuthentication) {
         return await this.getAllStudentsUseCase.execute(query, user);
@@ -39,7 +39,7 @@ export class StudentService {
     }
 
     async createStudent(userId: string, student: CreateStudentDto) {
-        const newStudent =  await this.createStudentUseCase.execute(userId, student);
+        const newStudent = await this.createStudentUseCase.execute(userId, student);
         this.eventEmitter.emit('student.created', newStudent);
         return newStudent;
     }
@@ -55,7 +55,4 @@ export class StudentService {
     async handleUploadAvatar(file: Express.Multer.File) {
         return await this.imageQueue.add('resize', { file });
     }
-
-
-
 }

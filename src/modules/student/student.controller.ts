@@ -12,6 +12,7 @@ import { BlackListGuard } from 'src/guards/black-list.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { CacheInterceptor } from 'src/interceptors/cache.interceptor';
 
 @ApiTags('students')
 @UseGuards(AuthGuard('jwt'), BlackListGuard)
@@ -22,6 +23,7 @@ export class StudentController {
     @Roles([ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.USER])
     @UseGuards(RoleGuard)
     @Get()
+    @UseInterceptors(CacheInterceptor)
     @ApiOperation({ summary: 'Get all students', description: 'Retrieve a list of all students with pagination' })
     @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
     @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
